@@ -59,6 +59,7 @@ public class FundController {
 
         JSONObject jsonObject=JSON.parseObject(str);
 
+        int updateFlag=0;
         if(jsonObject.get("code").equals(200)){
             JSONArray jsonArray=JSON.parseArray(jsonObject.get("data").toString());
             for(int i=0;i<jsonArray.size();i++){
@@ -76,11 +77,15 @@ public class FundController {
 
                 if(fundMapper.findFundByCode(fundInfo.getFundCode())==null){
                     fundMapper.insertFundTodayData(fundInfo);
-                    return "插入完毕";
                 }else{
                     fundMapper.updateFundTodayData(fundInfo);
-                    return "更新完毕";
+                    updateFlag=1;
                 }
+            }
+            if(updateFlag==1){
+                return "更新成功";
+            }else{
+                return "插入成功";
             }
         }
         return "插入失败";
