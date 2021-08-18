@@ -7,6 +7,7 @@
       <!--主部分-->
       <div class="main">
         <canvas id="myChart" width="350" height="260"></canvas>
+        <router-view></router-view>
       </div>
       <!--底部-->
       <div class="footer">
