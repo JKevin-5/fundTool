@@ -1,5 +1,6 @@
 package com.kevin.funds.bean;
 
+import lombok.Builder;
 import lombok.Data;
 
 @Data

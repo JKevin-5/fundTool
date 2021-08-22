@@ -1,9 +1,11 @@
 package com.kevin.funds.bean;
 
+import lombok.Builder;
 import lombok.Data;
 
 @Data
 public class Possession {
+    private int    possessionId;//持仓信息id
 	private int    userId;		//用户id
     private String fundCode;    //基金编号
     private double fundOwn;     //持有份额

@@ -17,7 +17,7 @@ public interface UserMapper {
 	public List<Possession> getPersonalPossession(int userId);
 
 	/*新增个人持有基金记录*/
-	@Insert("Insert into possession values(#{userId},#{fundCode},#{fundOwn},#{fundCost},#{nowTarget})")
+	@Insert("Insert into possession(userId,fundCode,fundOwn,fundCost,nowTarget) values(#{userId},#{fundCode},#{fundOwn},#{fundCost},#{nowTarget})")
 	public int addPossession(Possession possession);
 
 	/*修改个人持仓基金记录 根据持仓用户id、基金代码*/

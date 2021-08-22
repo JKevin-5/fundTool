@@ -1,6 +1,8 @@
 package com.kevin.funds.bean;
 
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 public class FundInfo {

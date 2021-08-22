@@ -19,8 +19,8 @@ public interface FundMapper {
     public List<Fund> selectAll();
 
     /*查找基金名称、基金代码*/
-    @Select("select fundCode,fundName from funds")
-    public List<Fund> selectFundCode();
+    @Select("select * from funds where fundCode LIKE CONCAT('%',#{info},'%') or fundName LIKE CONCAT('%',#{info},'%') or fundType LIKE CONCAT('%',#{info},'%') ")
+    public List<Fund> findFunds(String info);
 
     /*基金代码查找基金信息*/
     @Select("select * from funds where fundCode=#{fundCode}")

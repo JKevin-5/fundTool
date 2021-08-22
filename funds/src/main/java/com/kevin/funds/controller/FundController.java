@@ -5,13 +5,13 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.kevin.funds.bean.Fund;
 import com.kevin.funds.bean.FundInfo;
+import com.kevin.funds.bean.ResponseResult;
 import com.kevin.funds.mapper.FundMapper;
+import com.kevin.funds.service.FundService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static com.kevin.funds.service.FundService.sendGet;
@@ -22,10 +22,13 @@ public class FundController {
     @Autowired
     FundMapper fundMapper;
 
+    @Autowired
+    FundService fundService;
+
     @RequestMapping("/funds")
     public List<Fund> getAllFunds(){return fundMapper.selectAll();}
 
-    /*
+    /**
     * 插入所有的基金信息到基金信息表中
     * */
     @RequestMapping("/getAllFunds")
@@ -45,13 +48,26 @@ public class FundController {
         return "插入完毕！";
     }
 
-    /*
+    /**
     * 根据list查询所需的基金信息更新到基金信息表里
     * */
-    @RequestMapping("/getNowData")
-    public String getNowData() throws Exception{
-        List<String> list=  new ArrayList<>(Arrays.asList("001102","161725","000596"));
+    @RequestMapping(value ="/getNowData",produces = "application/json;charset=UTF-8")
+    public ResponseResult getNowData(@RequestBody JSONArray fundArray )throws Exception{
+
+        List<String> list=  new ArrayList<>();
+        //List<String> list=  new ArrayList<>(Arrays.asList("001102","161725","000596"));
+
+        //值不为空
+        if(fundArray != null){
+            for(Object fund:fundArray){
+                list.add((String) fund);
+            }
+        }
+
+        //API请求头
         String url="https://api.doctorxiong.club/v1/fund?code=";
+
+        //拼接参数url，获取str
         for(int i=0;i<list.size();i++)
             url=url+list.get(i)+",";
         url=url.substring(0,url.length()-1);
@@ -83,22 +99,25 @@ public class FundController {
                 }
             }
             if(updateFlag==1){
-                return "更新成功";
+                System.out.println("更新成功");
+                return new ResponseResult("200","更新成功",jsonObject);
             }else{
-                return "插入成功";
+                System.out.println("插入成功");
+                return new ResponseResult("200","插入成功",jsonObject);
             }
         }
-        return "插入失败";
+        return new ResponseResult("500","插入失败",jsonObject);
     }
 
 
-    /*
-     * 登记个人持有基金份额、成本单位净值
+    /**
+     * 模糊搜索基金信息
+     * 返回格式为 fundCode,fundName
      * */
-    @RequestMapping("/setPensolPossessions")
-    public String setPossessions(){
-
-        return "更新完成";
+    @RequestMapping(value="/findFunds", method = RequestMethod.GET)
+    public ResponseResult findFundInfo(@RequestParam("info") String info){
+        System.out.println("模糊搜索："+info);
+        return fundService.findFundInfo(info);
     }
 
 }

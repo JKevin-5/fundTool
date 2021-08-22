@@ -24,7 +24,7 @@ public interface StockIndexMapper {
 
     //查看指定时间的大盘指数
     @Select("select * from StockIndex where date=#{date}")
-    public List<StockIndex> selectStockIndex(Date date);
+    public List<StockIndex> selectStockIndex(String date);
 
     //查看大盘指数
     @Select("SELECT * FROM StockIndex order by date DESC limit 5")

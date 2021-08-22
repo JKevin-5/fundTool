@@ -1,25 +1,24 @@
 package com.kevin.funds.service;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.kevin.funds.bean.Fund;
+import com.kevin.funds.bean.ResponseResult;
 import com.kevin.funds.mapper.FundMapper;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.slf4j.LoggerFactory;
 import org.apache.http.HttpEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URI;
-import java.net.URL;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+
 
 @Service
 public class FundService {
@@ -29,14 +28,7 @@ public class FundService {
     public static final String CONTENT_TYPE = "Content-Type";
 
     @Autowired
-    FundMapper fundMapper;
-
-    public static void  getFunds(){
-
-        String Url="c";
-        //System.out.println(sendGet());
-    }
-
+    private FundMapper fundMapper;
 
     /**
      * 发送get请求
@@ -61,12 +53,32 @@ public class FundService {
     }
 
     /**
-     * 查询所有基金基本信息
-     * @para 发送链接 拼接参数  http://localhost:8090/order?a=1
+     * 模糊查询基金信息
      * @return
-     * @throws IOException
      */
-    public static void getFundsInfo() throws IOException{
+    public ResponseResult findFundInfo(String info){
+        System.out.println("--------"+info);
+        JSONObject jsonObject = new JSONObject();
+
+        try{
+            List<Fund> fundList = fundMapper.findFunds(info);
+            System.out.println("--------"+fundList);
+            //查询有结果
+            if(fundList.size()!=0){
+                JSONArray jsonArray=new JSONArray();
+                for(Fund fund:fundList){
+                    JSONObject fundinfo = (JSONObject) JSONObject.toJSON(fund);
+                    jsonArray.add(fundinfo);
+                }
+                jsonObject.put("data",jsonArray);
+                return new ResponseResult("200","查询成功",jsonObject);
+            }else{
+                return new ResponseResult("404","暂无数据",jsonObject);
+            }
+        } catch (Exception e){
+            jsonObject.put("err_detial",e.toString());
+            return new ResponseResult("500","系统出错",jsonObject);
+        }
 
     }
 }

@@ -17,10 +17,15 @@ public class StockIndexController {
     @Autowired
     StockIndexService stockIndexService;
 
+    /*
+    *   获取指定日期的指数信息
+    * */
     @RequestMapping("/stockIndex/{date}")
-    public List<StockIndex> getStockIndex(@PathVariable("date") Date date){
+    public List<StockIndex> getStockIndex(@PathVariable("date") String date) throws Exception{
+
         return stockIndexService.getStockIndex(date);
     };
+
 
     @RequestMapping("/stockIndex")
     public List<StockIndex> getStockIndex(){

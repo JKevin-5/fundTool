@@ -19,11 +19,15 @@ public class StockIndexService {
     @Autowired
     StockIndexMapper stockIndexMapper;
 
-    public List<StockIndex> getStockIndex(Date date){
-        return stockIndexMapper.selectStockIndex(date);
+    public List<StockIndex> getStockIndex(String dateString) throws Exception{
+//        DateFormat fmt =new SimpleDateFormat("yyyy-MM-dd");
+//        Date date = fmt.parse(dateString);
+        System.out.println(dateString);
+        return stockIndexMapper.selectStockIndex(dateString);
     }
 
     public List<StockIndex> getStockIndex(){
+        System.out.println("所有信息");
         return stockIndexMapper.selectAllStockIndex();
     }
 
@@ -33,7 +37,6 @@ public class StockIndexService {
         JSONObject jsonObject= JSON.parseObject(str);
         if(jsonObject.get("code").equals(200)){
             JSONArray jsonArray=JSON.parseArray(jsonObject.get("data").toString());
-            System.out.println(jsonObject.get("data").toString());
 
             //循环插入
             for(int i=0;i<jsonArray.size();i++) {
