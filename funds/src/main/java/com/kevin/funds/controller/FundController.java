@@ -109,14 +109,12 @@ public class FundController {
         return new ResponseResult("500","插入失败",jsonObject);
     }
 
-
     /**
      * 模糊搜索基金信息
      * 返回格式为 fundCode,fundName
      * */
-    @RequestMapping(value="/findFunds", method = RequestMethod.GET)
-    public ResponseResult findFundInfo(@RequestParam("info") String info){
-        System.out.println("模糊搜索："+info);
+    @RequestMapping("/findFunds/{info}")
+    public ResponseResult findFundInfo(@PathVariable("info") String info){
         return fundService.findFundInfo(info);
     }
 

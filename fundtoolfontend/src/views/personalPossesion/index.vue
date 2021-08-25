@@ -2,13 +2,22 @@
     <div class="container">
         <!-- 搜索框 -->
         <div class="search">
-            <van-search v-model="value" placeholder="请输入搜索关键词" />
+            <van-search
+                v-model="v"
+                show-action
+                label="基金"
+                placeholder="请输入搜索关键词"
+                @search="onSearch"
+            >
+                <template #action>
+                    <div @click="onSearch">搜索</div>
+                </template>
+            </van-search>
         </div>
         <!-- 显示部分 -->
         <div class="possesions">
             <van-cell-group inset>
-                <van-cell @click="showPopup">内容</van-cell>
-                <van-cell is-link @click="showPopup">展示弹出层</van-cell>
+                <van-cell is-link @click="showPopup">{{v}}</van-cell>
             </van-cell-group>
 
             <van-popup
@@ -22,18 +31,35 @@
 </template>
 <script>
 import {ref} from 'vue'
+import {getFund} from '@/network/fund'
 export default {
     setup() {
         //搜索内容
-        const value = ref('');
+        const v = ref('');
         const show = ref(false);
         const showPopup = () => {
             show.value = true;
         };
+        const array=['']
+        // const {proxy}=getCurrentInstance();
+        const onSearch= () =>{
+            console.log("value:====>"+v.value);
+            // proxy.$axios.post('/findFunds/?info=白酒').then(res=>{
+            //     console.log(res);
+            // })
+            getFund(v.value).then(res=>{
+               if(res.data.status==200){
+                   console.log("请求成功！"+res.data.err_massage);
+                   array.value=res.data.data;
+               } 
+            })
+            console.log(array)
+        }
         return { 
-            value,
+            v,
             show,
-            showPopup };
+            showPopup,
+            onSearch };
     },
 }
 </script>

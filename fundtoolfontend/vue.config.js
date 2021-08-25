@@ -2,6 +2,8 @@
 // 解决同源跨域问题
 module.exports = {
   devServer: {
+    host: 'localhost',
+    port: 8080,
       proxy: {
           '/api': {
               target: 'http://localhost:8001',// 你要请求的后端接口ip+port
