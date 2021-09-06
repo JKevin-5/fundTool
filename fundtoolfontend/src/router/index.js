@@ -1,26 +1,37 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Home from '../views/Home.vue'
-import homepage from '../views/homepage/index.vue'
-import personalPossesion from '../views/personalPossesion/index.vue'
-import setting from '../views/setting/index.vue'
 const routes = [
   {
     path: '',
     redirect: '/home'
   },{
+    path: '/login',
+    name: 'Login',
+    component: ()=>import('../views/Login.vue')
+  },{
     path: '/home',
     name: 'Home',
-    component: Home,
+    component: ()=>import('../views/Home.vue'),
     children:[
       {
         path: '',
-        component: homepage
+        name: 'Homepage',
+        meta: {
+          keepAlive: false //设置页面是否需要使用缓存
+        },
+        component: ()=> import('../views/homepage/index.vue')
       },{
         path: 'personalPossesion',
-        component: personalPossesion
+        name: 'PersonalPossesion',
+        meta: {
+          keepAlive: true //设置页面是否需要使用缓存
+        },
+        component: ()=> import('../views/personalPossesion/index.vue')
       },{
         path: 'setting',
-        component: setting
+        meta: {
+          keepAlive: false //设置页面是否需要使用缓存
+        },
+        component: ()=>import('../views/setting/index.vue')
       }
     ]
   }

@@ -13,18 +13,24 @@
                     <div @click="onSearch">搜索</div>
                 </template>
             </van-search>
+            <!-- 共有多少查询结果 -->
+            <div v-if="array.funds.length>0">一共有{{array.funds.length}}条数据</div>
         </div>
         <!-- 显示部分 -->
         <div class="possesions">
-            <van-cell-group inset>
-                <van-cell is-link @click="showPopup">{{v}}</van-cell>
+            <van-row v-if="flag">
+                <van-col span="10"></van-col>
+                <van-col span="4"><van-loading type="spinner"/></van-col>
+                <van-col span="10"></van-col>
+            </van-row>
+            <van-cell-group inset >
+                <van-cell is-link @click="showPopup" v-for="item in array.funds" :key="item">基金名字：{{item.fundName}}</van-cell>
             </van-cell-group>
-
             <van-popup
                 v-model:show="show"
                 round
                 position="bottom"
-                :style="{ height: '30%' }"
+                :style="{ height: '50%' }"
             />
         </div>
     </div>
@@ -37,29 +43,33 @@ export default {
         //搜索内容
         const v = ref('');
         const show = ref(false);
+        const flag = ref(false);
         const showPopup = () => {
             show.value = true;
         };
-        const array=['']
-        // const {proxy}=getCurrentInstance();
+        const array= ref({
+            funds:[]
+        });
         const onSearch= () =>{
-            console.log("value:====>"+v.value);
-            // proxy.$axios.post('/findFunds/?info=白酒').then(res=>{
-            //     console.log(res);
-            // })
+            flag.value= true;
+            array.value.funds=[];
             getFund(v.value).then(res=>{
                if(res.data.status==200){
-                   console.log("请求成功！"+res.data.err_massage);
-                   array.value=res.data.data;
-               } 
+                   flag.value=false;
+                   console.log(res.data.err_massage);
+                   array.value.funds=res.data.data.data;
+               }else{
+                   console.log(res.data.err_massage);
+               }
             })
-            console.log(array)
         }
         return { 
             v,
             show,
             showPopup,
-            onSearch };
+            onSearch,
+            array,
+            flag};
     },
 }
 </script>
@@ -70,6 +80,6 @@ export default {
 
     .possesions{
         padding: 10px;
-        background: bisque;
+        background-color: #D8D8D8;
     }
 </style>

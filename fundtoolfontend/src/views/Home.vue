@@ -2,11 +2,16 @@
     <div class="container">
       <!--顶部-->
       <div class="header">
-        <Header></Header>
+          <Header></Header>
       </div>
       <!--主部分-->
       <div class="main">
-        <router-view></router-view>
+        <router-view v-slot="{ Component }">
+          <keep-alive>
+            <component :is="Component" v-if="$route.meta.keepAlive"/>
+          </keep-alive>
+          <component :is="Component"  v-if="!$route.meta.keepAlive"/>
+        </router-view> 
       </div>
       <!--底部-->
       <div class="footer">
@@ -45,6 +50,7 @@ export default {
   .footer{
     position: fixed;
     bottom:0;
+    z-index: 2;
   }
   .main{
     position:absolute;

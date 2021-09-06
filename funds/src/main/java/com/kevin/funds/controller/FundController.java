@@ -3,8 +3,8 @@ package com.kevin.funds.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.kevin.funds.bean.Fund;
 import com.kevin.funds.bean.FundInfo;
+import com.kevin.funds.bean.FundDaily;
 import com.kevin.funds.bean.ResponseResult;
 import com.kevin.funds.mapper.FundMapper;
 import com.kevin.funds.service.FundService;
@@ -26,7 +26,7 @@ public class FundController {
     FundService fundService;
 
     @RequestMapping("/funds")
-    public List<Fund> getAllFunds(){return fundMapper.selectAll();}
+    public List<FundInfo> getAllFunds(){return fundMapper.selectAll();}
 
     /**
     * 插入所有的基金信息到基金信息表中
@@ -38,12 +38,12 @@ public class FundController {
         str=str.substring(9,str.length()-1);
         JSONArray jsonArray = JSON.parseArray(str);
         for(int i=0;i<jsonArray.size();i++){
-            Fund fund =new Fund();
+            FundInfo fundInfo =new FundInfo();
             JSONArray jsonArray1= JSON.parseArray(jsonArray.get(i).toString());
-            fund.setFundCode(jsonArray1.get(0).toString());
-            fund.setFundName(jsonArray1.get(2).toString());
-            fund.setFundType(jsonArray1.get(3).toString());
-            fundMapper.insertFundData(fund);
+            fundInfo.setFundCode(jsonArray1.get(0).toString());
+            fundInfo.setFundName(jsonArray1.get(2).toString());
+            fundInfo.setFundType(jsonArray1.get(3).toString());
+            fundMapper.insertFundData(fundInfo);
         }
         return "插入完毕！";
     }
@@ -81,20 +81,20 @@ public class FundController {
             for(int i=0;i<jsonArray.size();i++){
                 JSONObject jsonObject1=jsonArray.getJSONObject(i);
 
-                FundInfo fundInfo=new FundInfo();
-                fundInfo.setFundCode(jsonObject1.get("code").toString());
-                fundInfo.setNetWorth(jsonObject1.get("netWorth").toString());
-                fundInfo.setExpectWorth(jsonObject1.get("expectWorth").toString());
-                fundInfo.setExpectGrowth(jsonObject1.get("expectGrowth").toString());
-                fundInfo.setDayGrowth(jsonObject1.get("dayGrowth").toString());
-                fundInfo.setLastWeekGrowth(jsonObject1.get("lastWeekGrowth").toString());
-                fundInfo.setNetWorthDate(jsonObject1.get("netWorthDate").toString());
-                fundInfo.setExpectWorthDate(jsonObject1.get("expectWorthDate").toString());
+                FundDaily fundDaily =new FundDaily();
+                fundDaily.setFundCode(jsonObject1.get("code").toString());
+                fundDaily.setNetWorth(jsonObject1.get("netWorth").toString());
+                fundDaily.setExpectWorth(jsonObject1.get("expectWorth").toString());
+                fundDaily.setExpectGrowth(jsonObject1.get("expectGrowth").toString());
+                fundDaily.setDayGrowth(jsonObject1.get("dayGrowth").toString());
+                fundDaily.setLastWeekGrowth(jsonObject1.get("lastWeekGrowth").toString());
+                fundDaily.setNetWorthDate(jsonObject1.get("netWorthDate").toString());
+                fundDaily.setExpectWorthDate(jsonObject1.get("expectWorthDate").toString());
 
-                if(fundMapper.findFundByCode(fundInfo.getFundCode())==null){
-                    fundMapper.insertFundTodayData(fundInfo);
+                if(fundMapper.findFundByCode(fundDaily.getFundCode())==null){
+                    fundMapper.insertFundTodayData(fundDaily);
                 }else{
-                    fundMapper.updateFundTodayData(fundInfo);
+                    fundMapper.updateFundTodayData(fundDaily);
                     updateFlag=1;
                 }
             }

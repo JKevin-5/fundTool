@@ -2,7 +2,7 @@ package com.kevin.funds.service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.kevin.funds.bean.Fund;
+import com.kevin.funds.bean.FundInfo;
 import com.kevin.funds.bean.ResponseResult;
 import com.kevin.funds.mapper.FundMapper;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -15,8 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -61,13 +59,13 @@ public class FundService {
         JSONObject jsonObject = new JSONObject();
 
         try{
-            List<Fund> fundList = fundMapper.findFunds(info);
-            System.out.println("--------"+fundList);
+            List<FundInfo> fundInfoList = fundMapper.findFunds(info);
+            System.out.println("--------"+ fundInfoList);
             //查询有结果
-            if(fundList.size()!=0){
+            if(fundInfoList.size()!=0){
                 JSONArray jsonArray=new JSONArray();
-                for(Fund fund:fundList){
-                    JSONObject fundinfo = (JSONObject) JSONObject.toJSON(fund);
+                for(FundInfo fundInfo : fundInfoList){
+                    JSONObject fundinfo = (JSONObject) JSONObject.toJSON(fundInfo);
                     jsonArray.add(fundinfo);
                 }
                 jsonObject.put("data",jsonArray);
