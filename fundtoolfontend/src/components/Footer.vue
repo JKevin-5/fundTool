@@ -21,9 +21,6 @@ export default {
         const route = useRoute();
         onBeforeMount(()=>{
             console.log(toRaw(route).fullPath.value.lenght);
-            // if(toRaw(route).fullPath.value.lenght){
-
-            // }
         })
         return { active,logFuction };
     },

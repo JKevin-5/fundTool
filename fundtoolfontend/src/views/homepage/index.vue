@@ -13,19 +13,21 @@
                 </van-col>
         </van-row> -->
         <van-cell-group inset >
-            <van-cell v-for="stockindex in stockindex.data" :key="stockindex">{{stockindex.name}} : {{stockindex.value}}  日涨跌幅：{{stockindex.fall_percent}}%</van-cell>
+            <van-cell v-for="stockindex in stockindex.data" :key="stockindex">
+                {{stockindex.name}} : {{stockindex.price}}  日涨跌幅：{{stockindex.changePercent}}%
+            </van-cell>
         </van-cell-group>
         <!-- <canvas id="myChart" width="350" height="260"></canvas> -->
     </div>
 </template>
 <script>
 import {getCurrentInstance,nextTick, onBeforeMount,ref} from 'vue'
-import {getStockIndex} from '@/network/out_search'
+import {getStock} from '@/network/out_search'
 export default({
     setup(){
         const {proxy} = getCurrentInstance();
         const stockindex = ref({
-            code:['s_sh000001','s_sz399001','sh000300','sz399006'],
+            code:['s_sh000001','s_sz399001'],
             data:[]
         })
         const data = [
@@ -52,26 +54,16 @@ export default({
             // Step 4: 渲染图表
             chart.render();
         });
-        const search= async ()=>{
-            for(var i=0;i<stockindex.value.code.length;i++){
-                var res = await getStockIndex(stockindex.value.code[i]).then(res=>{
-                        return res;
-                    })
-                let strs= res.data.substring(23).split(',');
-                var array={};
-                array.name=strs[0];
-                array.value=strs[1];
-                array.fall_value=strs[2];
-                array.fall_percent=strs[3];
-                array.total=strs[5].substring(0,strs[5].lenght);
-                
-                stockindex.value.data.push(array);
-            }
+
+        //查询大盘股票信息
+        const search= ()=>{
+            getStock('sh000001,sz399001,sz399006').then(res=>{
+                stockindex.value.data=res.data.data;
+                console.log(stockindex.value.data);
+            })
         }
         onBeforeMount(()=>{
             search();
-            
-            
         })
         return{
             stockindex

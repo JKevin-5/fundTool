@@ -2,7 +2,7 @@ import axios from 'axios';
 //创建axios实例
 const instance = axios.create({
     timeout: 30000,   //请求超时时间
-    baseURL: '/xinlang'
+    baseURL: 'https://api.doctorxiong.club/v1/fund'
 })
 
 //get请求

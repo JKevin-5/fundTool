@@ -12,18 +12,4 @@ public class UserService {
 	@Autowired
 	UserMapper userMapper;
 
-	/*
-	* 获取所有持仓信息
-	* */
-	public List<Possession> getProssessionByUserId(int userId){
-		return userMapper.getPersonalPossession(userId);
-	}
-
-	/*
-	* 新增个人持仓信息
-	* */
-	public int addProssessionByUserId(Possession possession){
-		return userMapper.addPossession(possession);
-	}
-
 }
