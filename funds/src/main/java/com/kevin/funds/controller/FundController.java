@@ -1,29 +1,19 @@
 package com.kevin.funds.controller;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.kevin.funds.bean.FundDaily;
 import com.kevin.funds.bean.Common.ResponseResult;
-import com.kevin.funds.mapper.FundMapper;
 import com.kevin.funds.service.FundService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.kevin.funds.util.Network.sendGet;
-
 
 @Api(tags = "基金接口")
 @RestController
 @RequestMapping("/funds")
 public class FundController {
-    @Autowired
-    FundMapper fundMapper;
+
     @Autowired
     FundService fundService;
 
