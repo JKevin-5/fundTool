@@ -5,8 +5,9 @@ import com.kevin.funds.bean.Common.ResponseResult;
 import com.kevin.funds.service.FundService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import javax.inject.Inject;
 
 
 @Api(tags = "基金接口")
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/funds")
 public class FundController {
 
-    @Autowired
+    @Inject
     FundService fundService;
 
     @ApiOperation(value = "更新基金",notes = "更新基金基础数据")

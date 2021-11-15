@@ -7,15 +7,10 @@ import com.kevin.funds.bean.Common.ResponseResult;
 import com.kevin.funds.bean.Fund.FundHis;
 import com.kevin.funds.bean.Fund.FundInfo;
 import com.kevin.funds.mapper.FundMapper;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
-import org.apache.http.HttpEntity;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
+import javax.inject.Inject;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -28,7 +23,7 @@ import static com.kevin.funds.util.Network.sendGet;
 @Service
 public class FundService {
 
-    @Autowired
+    @Inject
     private FundMapper fundMapper;
 
 
@@ -60,6 +55,10 @@ public class FundService {
 
     }
 
+    /**
+     * 模糊查询基金历史信息
+     * @return
+     */
     public ResponseResult findFundHis(String info){
         JSONObject jsonObject = new JSONObject();
         List<FundHis> fundHisList = fundMapper.findFundHis(info);
@@ -78,6 +77,7 @@ public class FundService {
 
     //更新基金基础信息
     public ResponseResult updateFundInfo() throws Exception{
+        long start = System.currentTimeMillis();
         String str = sendGet("http://fund.eastmoney.com/js/fundcode_search.js");
         str=str.substring(9,str.length()-1);
         JSONArray jsonArray = JSON.parseArray(str);
@@ -92,13 +92,13 @@ public class FundService {
             fundInfo.setUpdateTime(new Date());
             fundInfoList.add(fundInfo);
         }
-        long start = System.currentTimeMillis();
+
         int status = fundMapper.insertFundInfo(fundInfoList);
         long end = System.currentTimeMillis();
 
         JSONObject jsonObject= new JSONObject();
         jsonObject.put("size",jsonArray.size());
-        jsonObject.put("timeSpend",(start - end)+"ms");
+        jsonObject.put("timeSpend",(end - start)+"ms");
         if(status>0){
             return new ResponseResult("200","信息更新完毕",jsonObject);
         }else{
@@ -109,10 +109,10 @@ public class FundService {
 
     //更新基金的历史数据
     public ResponseResult updateFundHis(String fundCode,String date) throws Exception{
+        long start = System.currentTimeMillis();
         String str = sendGet("https://api.doctorxiong.club/v1/fund/detail?code="+fundCode+"&startDate="+date);
         JSONObject jsonObject= JSON.parseObject(str);
 
-        List<FundHis> fundHisList = new ArrayList<>();
         JSONObject data = jsonObject.getJSONObject("data");
         FundHis fundHis = new FundHis();
         fundHis.setFundCode(data.getString("code"));
@@ -123,24 +123,25 @@ public class FundService {
         fundHis.setExpectGrowth(Double.parseDouble(data.get("expectGrowth").toString()));
         fundHis.setLastWeekGrowth(Double.parseDouble(data.get("lastWeekGrowth").toString()));
         fundHis.setLastMonthGrowth(Double.parseDouble(data.get("lastMonthGrowth").toString()));
-        fundHis.setThisYearGrowth(Double.parseDouble(data.get("lastYearGrowth").toString()));
+        fundHis.setThisYearGrowth(Double.parseDouble(StringUtils.isNotEmpty(data.get("lastYearGrowth").toString())?data.get("lastYearGrowth").toString():"0"));
 
-        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-mm-dd");
-        Date indate=sdf.parse(data.get("expectWorthDate").toString());
-        fundHis.setExpectWorthDate(indate);
+        SimpleDateFormat sdf1=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date indate1=sdf1.parse(data.get("expectWorthDate").toString());
+        fundHis.setExpectWorthDate(indate1);
 
-        indate=sdf.parse(data.get("netWorthDate").toString());
-        fundHis.setNetWorthDate(indate);
+        SimpleDateFormat sdf2=new SimpleDateFormat("yyyy-MM-dd");
+        Date indate2=sdf2.parse(data.get("netWorthDate").toString());
+        System.out.println(indate1.toLocaleString()+"\n"+indate2);
+        fundHis.setNetWorthDate(indate2);
 
         fundHis.setNetWorthData(data.get("netWorthData").toString());
-        fundHisList.add(fundHis);
 
-        long start = System.currentTimeMillis();
-        int status = fundMapper.insertFundHis(fundHisList);
+
+        int status = fundMapper.insertFundHis(fundHis);
         long end = System.currentTimeMillis();
 
         JSONObject jsonObjectMessage= new JSONObject();
-        jsonObjectMessage.put("timeSpend",(start - end)+"ms");
+        jsonObjectMessage.put("timeSpend",(end - start)+"ms");
         if(status>0){
             return new ResponseResult("200","历史信息更新完毕",jsonObjectMessage);
         }else {

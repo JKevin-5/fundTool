@@ -1,8 +1,6 @@
 package com.kevin.funds.controller;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.kevin.funds.bean.Possession;
 import com.kevin.funds.bean.Common.ResponseResult;
 import com.kevin.funds.mapper.UserMapper;
 import com.kevin.funds.service.UserService;
@@ -10,16 +8,17 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import javax.inject.Inject;
 
 @Api(tags = "用户接口")
 @RestController
 @RequestMapping("/users")
 public class UserController {
-	@Autowired
+	@Inject
 	UserService userService;
-	@Autowired
+	@Inject
 	UserMapper userMapper;
 
 	@ApiOperation(value = "查询用户",notes = "查询用户信息")

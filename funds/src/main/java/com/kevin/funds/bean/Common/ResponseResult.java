@@ -16,4 +16,8 @@ public class ResponseResult {
 		this.err_massage=err_massage;
 		this.data=data;
 	}
+	public ResponseResult(String status,String err_massage){
+		this.status=status;
+		this.err_massage=err_massage;
+	}
 }

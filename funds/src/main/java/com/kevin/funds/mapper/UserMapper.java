@@ -1,6 +1,5 @@
 package com.kevin.funds.mapper;
 
-import com.kevin.funds.bean.Possession;
 import com.kevin.funds.bean.User.User;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;

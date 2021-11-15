@@ -6,18 +6,18 @@ import com.kevin.funds.bean.Common.SysJob;
 import com.kevin.funds.mapper.SysJobMapper;
 import com.kevin.funds.util.CronTaskRegistrar;
 import com.kevin.funds.util.SchedulingRunnable;
-import org.apache.ibatis.annotations.Mapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.inject.Inject;
 
 @Service
 public class SysJobService {
 
-	@Autowired
+	@Inject
 	private SysJobMapper sysJobMapper;
 
-	@Autowired
+	@Inject
 	private CronTaskRegistrar cronTaskRegistrar;
 	final int NORMAL=1;
 	/*

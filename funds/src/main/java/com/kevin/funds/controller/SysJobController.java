@@ -6,15 +6,16 @@ import com.kevin.funds.mapper.SysJobMapper;
 import com.kevin.funds.service.SysJobService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import javax.inject.Inject;
 
 @Api(tags = "定时任务接口")
 @RestController
 @RequestMapping("/sysjobs")
 public class SysJobController {
 
-	@Autowired
+	@Inject
 	SysJobService sysJobService;
 
 	@ApiOperation(value = "新增任务",notes = "新增定时任务")
