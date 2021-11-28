@@ -34,6 +34,10 @@ const routes = [
         component: ()=>import('../views/setting/index.vue')
       }
     ]
+  },{
+    path: '/fund',
+    name: 'Fund',
+    component: ()=> import('../views/fundPage/index.vue')
   }
 ]
 

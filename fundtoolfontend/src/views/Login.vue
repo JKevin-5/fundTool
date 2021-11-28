@@ -8,7 +8,7 @@
         <div class="green">
             <n-card title="登录" style="padding-bottom:100px;">
               <template #cover>
-                <n-space justify="space-around" size="large" style="padding:100px;">
+                <n-space justify="space-around" size="48" style="padding:100px;">
                   <n-avatar
                     round
                     :size="48"
@@ -33,7 +33,8 @@
                   />
                 </n-form-item>
                 <n-form-item>
-                  <n-button @click="handleValidateClick" attr-type="button">验证</n-button>
+                  <n-button @click="handleValidateClick" attr-type="button">登录</n-button>
+                  <n-button text style="margin-left:20px;">注册</n-button>
                 </n-form-item>
               </n-form>
             </n-card>

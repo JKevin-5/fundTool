@@ -16,6 +16,6 @@ public interface UserMapper {
 	public List<User> getAllUsers();
 
 
-	@Select("Select userPassword from users where userName=#{userName}")
-	public String getUserByUserName(String userName);
+	@Select("Select * from users where userName=#{userName}")
+	public User getUserByUserName(String userName);
 }
