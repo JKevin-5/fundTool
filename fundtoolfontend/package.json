@@ -9,12 +9,14 @@
   },
   "dependencies": {
     "@antv/f2": "^3.8.9",
+    "@vicons/ionicons5": "^0.11.0",
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
+    "echarts": "^5.2.2",
     "naive-ui": "^2.20.2",
     "vant": "^3.2.0",
     "vue": "^3.0.0",
-    "vue-router": "^4.0.0-0",
+    "vue-router": "^4.0.12",
     "vuex": "^4.0.0-0"
   },
   "devDependencies": {

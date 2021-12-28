@@ -2,14 +2,14 @@ import { createRouter, createWebHistory } from 'vue-router'
 const routes = [
   {
     path: '',
-    redirect: '/home'
+    redirect: '/login'
   },{
     path: '/login',
     name: 'Login',
     component: ()=>import('../views/Login.vue')
   },{
-    path: '/home',
-    name: 'Home',
+    path: '/home1',
+    name: 'Home1',
     component: ()=>import('../views/Home.vue'),
     children:[
       {
@@ -26,18 +26,34 @@ const routes = [
           keepAlive: true //设置页面是否需要使用缓存
         },
         component: ()=> import('../views/personalPossesion/index.vue')
-      },{
-        path: 'setting',
-        meta: {
-          keepAlive: false //设置页面是否需要使用缓存
-        },
-        component: ()=>import('../views/setting/index.vue')
       }
     ]
   },{
     path: '/fund',
     name: 'Fund',
-    component: ()=> import('../views/fundPage/index.vue')
+    component: ()=> import('../views/fundPage/fundPage.vue')
+  },{
+    path: '/home',
+    name: 'Home',
+    component: ()=> import('../views/HomePage.vue'),
+    children:[
+      {
+        path: 'funds',
+        meta: {
+          keepAlive: true //设置页面是否需要使用缓存
+        },
+        component: ()=>import('../views/fundPage/fundPage.vue')
+      },{
+        path: 'fundHis',
+        meta: {
+          keepAlive: true
+        },
+        component: ()=>import('../views/fundPage/fundDetailPage.vue')
+      }
+    ]
+  },{
+    path: '/test',
+    component: ()=> import('../views/CollectionPage.vue')
   }
 ]
 

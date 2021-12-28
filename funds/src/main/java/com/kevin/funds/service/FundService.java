@@ -131,7 +131,6 @@ public class FundService {
 
         SimpleDateFormat sdf2=new SimpleDateFormat("yyyy-MM-dd");
         Date indate2=sdf2.parse(data.get("netWorthDate").toString());
-        System.out.println(indate1.toLocaleString()+"\n"+indate2);
         fundHis.setNetWorthDate(indate2);
 
         fundHis.setNetWorthData(data.get("netWorthData").toString());

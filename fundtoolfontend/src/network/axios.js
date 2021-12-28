@@ -12,6 +12,9 @@ export const get = (url, params, config = {}) => {
         method: 'get',
         url,
         params,
+        headers: {
+          'token': window.localStorage.token
+        },
         ...config
       },).then(response => {
         resolve(response)
@@ -53,7 +56,7 @@ export const deletes = (url, data, config = {}) => {
     })
   }
 
-//post请求
+//put请求
 export const put = (url, data, config = {}) => {
   return new Promise((resolve, reject) => {
     instance({

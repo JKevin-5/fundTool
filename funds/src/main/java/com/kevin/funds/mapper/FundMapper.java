@@ -16,12 +16,9 @@ public interface FundMapper {
     public List<FundInfo> selectAll();
 
 
-
     /*基金代码查找基金信息*/
     @Select("select * from funds where fundCode=#{fundCode}")
     public FundInfo findFundByCode(String fundCode);
-
-
 
 
     /*更新基金基础信息*/

@@ -1,75 +1,129 @@
 <template>
   <div class="main">
-    <n-grid x-gap="12" :cols="3">
-      <n-gi>
-        <div class="light-green"></div>
-      </n-gi>
-      <n-gi>
+    <n-divider>Screen 响应式 登录界面</n-divider>
+    <n-grid cols="6" item-responsive responsive="screen">
+      <n-grid-item  span="0 m:1 l:2">
         <div class="green">
-            <n-card title="登录" style="padding-bottom:100px;">
-              <template #cover>
-                <n-space justify="space-around" size="48" style="padding:100px;">
-                  <n-avatar
-                    round
-                    :size="48"
-                    src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg"
-                  />
-                </n-space>
-              </template>
-              <n-form>
-                <n-form-item>
-                  <n-input
-                    placeholder="用户名/邮箱"
-                    v-model="userName"
-                    />
-                </n-form-item>
-                <n-form-item>
-                  <n-input
-                    type="password"
-                    show-password-on="mousedown"
-                    placeholder="密码"
-                    :maxlength="8"
-                    v-model="userPassWord"
-                  />
-                </n-form-item>
-                <n-form-item>
-                  <n-button @click="handleValidateClick" attr-type="button">登录</n-button>
-                  <n-button text style="margin-left:20px;">注册</n-button>
-                </n-form-item>
-              </n-form>
-            </n-card>
+          m 以下:2不显示<br />
+          m 到 l:占据空间 1<br />
+          l 以上:占据空间 2
         </div>
-      </n-gi>
-      <n-gi>
-        <div class="light-green"></div>
-      </n-gi>
+      </n-grid-item>
+      <n-grid-item span="6 m:4 l:2">
+        <div class="light-green">
+          <n-card title="登录" hoverable>
+            <n-form :model="model" ref="formRef" :rules="rules">
+              <n-form-item path="username" label="用户名">
+                <n-input v-model:value="model.username" @keydown.enter.prevent />
+              </n-form-item>
+              <n-form-item path="password" label="密码">
+                <n-input v-model:value="model.password" @keydown.enter.prevent type="password"/>
+              </n-form-item>
+              <n-form-item>
+                <n-button @click="login" attr-type="button">登录</n-button>
+              </n-form-item>
+            </n-form>
+          </n-card>
+        </div>
+      </n-grid-item>
+      <n-grid-item span="0 m:1 l:2">
+        <div class="green">
+          m 以下:2不显示<br />
+          m 到 l:占据空间 1<br />
+          l 以上:占据空间 2
+        </div>
+      </n-grid-item>
     </n-grid>
   </div>
 </template>
 <script>
-import {ref} from 'vue'
-export default {
+import {defineComponent, ref} from 'vue'
+import {getToken} from '@/network/system'
+import {setTokenLocalstorage} from '@/util/userInfoUtil'
+import { useRouter} from 'vue-router';
+import { useMessage } from 'naive-ui';
+export default defineComponent({
   setup() {
-    const userName = ref('');
-    const userPassWord = ref('');
+    const formRef = ref(null);
+    const rPasswordFormItemRef = ref(null);
+    const modelRef = ref({
+      username:null,
+      password:null
+    });
+    const router = useRouter();
+    const message = useMessage();
+    const token = ref(null);
     return {
-      userName,
-      userPassWord
-    };
+      formRef,
+      model: modelRef,
+      token,
+      rules: {
+        username: [
+          {
+            required: true,
+            validator (rule, value) {
+              if (!value) {
+                return new Error('需要用户名')
+              }
+              return true
+            },
+            trigger: ['input', 'blur']
+          }
+        ],
+        password: [
+          {
+            required: true,
+            validator (rule, value) {
+              if(!value) {
+                return new Error('需要密码')
+              }
+              return true
+            },
+            trigger: ['input', 'blur']
+          }
+        ]
+      },
+      handlePasswordInput () {
+        if (modelRef.value.reenteredPassword) {
+          rPasswordFormItemRef.value.validate({ trigger: 'password-input' })
+        }
+      },
+      login () {
+        getToken(modelRef.value.username,modelRef.value.password).then(res=>{
+          if(res.data.state){
+            setTokenLocalstorage(res.data.token);
+            message.info(res.data.msg);
+            console.log(window.localStorage.token);
+            router.push('/home');
+          }else{
+            message.warning(res.data.msg);
+          } 
+        }).catch(err=>{
+          message.error(err);
+        })
+      }
+    }
   },
-};
+});
 </script>
 <style lang="scss" scoped>
-.main{
-  height: 100%;
-  background-color: rgba(17, 17, 20);
-}
 .light-green {
-  height: 600px;
+  height: 980px;
   background-color: rgba(0, 128, 0, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .green {
-  height: 600px;
+  height: 980px;
   background-color: rgba(0, 128, 0, 0.24);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.n-card {
+  max-width: 400px;
+  padding: 20px;
+  height: 360px;
 }
 </style>

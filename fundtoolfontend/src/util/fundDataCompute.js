@@ -10,9 +10,9 @@ export const sumFunds = (funds) =>{
 /**
  * 基金的总金额,三点后进行更新
  */
-export const fundAmount = (funds) =>{
+// export const fundAmount = (funds) =>{
     
-}
+// }
 
 //基金的总盈亏百分比
 
