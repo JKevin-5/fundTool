@@ -20,20 +20,21 @@
         />
       </n-layout-sider>
       <n-layout content-style="padding: 24px;" :native-scrollbar="false">
+        <!-- 这是vue3的写法，与vue2的写法有所区别，如果这里使用vue2.x写法，会有警告 -->
         <router-view v-slot="{ Component }">
           <keep-alive>
-            <component :is="Component" v-if="ifShow"/>
+            <component :is="Component" :key="$route.name" v-if="$route.meta.keepAlive" />
           </keep-alive>
-          <component :is="Component"  v-if="!ifShow"/>
-        </router-view> 
+          <component :is="Component" :key="$route.name" v-if="!$route.meta.keepAlive" />
+        </router-view>
+
       </n-layout>
     </n-layout>
   </n-layout>
 </template>
 <script>
-import { h,defineComponent, onMounted, watch } from 'vue'
+import { h,defineComponent, onMounted } from 'vue'
 import { NIcon } from 'naive-ui'
-import router from '@/router'
 import {
   BookOutline as BookIcon
 } from '@vicons/ionicons5'
@@ -45,23 +46,12 @@ export default defineComponent({
   
   setup() {
     // const proxy = getCurrentInstance();
-    var ifShow = false;
     onMounted(()=>{
       // console.log(router.currentRoute.value.meta.keepAlive);
     })
-    watch(router.currentRoute,()=>{
-      const route = router.currentRoute.value;
-      ifShow = route.meta?.keepAlive;
-      console.log(ifShow);
-    })
     return {
-      ifShow,
       menuOptions:[
         {
-          label: '功能集合',
-          key: 'hear-the-wind-sing',
-          icon: renderIcon(BookIcon)
-        },{
           label: '基金',
           key: 'dance-dance-dance',
           icon: renderIcon(BookIcon),
@@ -88,6 +78,43 @@ export default defineComponent({
                   { default:() => '基金历史信息查询'}
                 ),
               key: 'fund—his'
+            }
+          ]
+        },
+        {
+          label: '个人配置',
+          key: 'personal-possession',
+          icon: renderIcon(BookIcon),
+          children: [
+            { label: ()=>
+                h(
+                  RouterLink,
+                  {
+                    to: {
+                      path: '/home/possesions'
+                    }
+                  },
+                  { default:() => '管理个人配置'}
+                ),
+              key: 'possesions'
+            }
+          ]
+        },{
+          label: '定时任务配置中心',
+          key: 'cron-setting',
+          icon: renderIcon(BookIcon),
+          children: [
+            { label: ()=>
+                h(
+                  RouterLink,
+                  {
+                    to: {
+                      path: '/home/cron'
+                    }
+                  },
+                  { default:() => '定时任务管理'}
+                ),
+              key: 'cron'
             }
           ]
         }

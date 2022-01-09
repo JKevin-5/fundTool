@@ -53,4 +53,10 @@ public interface FundMapper {
     /*模糊查询基金历史数据*/
     @Select("select * from funds_his where fundCode LIKE CONCAT('%',#{info},'%') or fundName LIKE CONCAT('%',#{info},'%') ")
     public List<FundHis> findFundHis(String info);
+
+    /*
+    * 查询所有基金的名称 选择器用
+    * */
+    @Select("select fundName,fundCode from fundInfo where fundName LIKE CONCAT('%',#{info},'%') or fundCode =#{info} ")
+    public List<FundInfo> fundList(String info);
 }

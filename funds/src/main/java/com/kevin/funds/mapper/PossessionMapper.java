@@ -13,14 +13,14 @@ import java.util.List;
 @Mapper
 public interface PossessionMapper {
 
-
 	//查找个人持仓信息
 	@Select("select * from possession where userNo=#{userNo}")
 	public List<Possession> findPossesionByUserNo(String userNo);
 
 	//新增个人基金持仓
-	@Insert("insert into possession (fundCode,userNo,possessionWorth,possessionNum,nowWorth,earnPercent,earn,totalWorth,sellHis,createTime,updateTime) " +
-			"values (#{fundCode},#{userNo},#{possessionWorth},#{possessionNum},#{nowWorth},#{earnPercent},#{earn},#{totalWorth},#{sellHis},now(),now())")
+	@Insert("insert into possession (fundCode,fundName,userNo,possessionWorth,possessionNum,nowWorth,earnPercent,earn,totalWorth,sellHis,createTime,updateTime) " +
+			"values (#{fundCode},#{fundName},#{userNo},#{possessionWorth},#{possessionNum},#{nowWorth},#{earnPercent},#{earn},#{totalWorth},#{sellHis},now(),now())"+
+			"ON DUPLICATE KEY UPDATE updateTime = NOW()")
 	public boolean addPossession(Possession possession);
 
 	//更新个人基金信息

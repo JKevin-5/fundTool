@@ -11,6 +11,7 @@ public class Possession {
     //固定值
     private int    id;            //持仓信息id
 	private String fundCode;      //基金代码
+    private String fundName;      //基金名称
     private String userNo;        //个人No
 
     private double possessionWorth;//持有成本

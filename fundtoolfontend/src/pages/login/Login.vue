@@ -1,12 +1,8 @@
 <template>
   <div class="main">
-    <n-divider>Screen 响应式 登录界面</n-divider>
     <n-grid cols="6" item-responsive responsive="screen">
       <n-grid-item  span="0 m:1 l:2">
         <div class="green">
-          m 以下:2不显示<br />
-          m 到 l:占据空间 1<br />
-          l 以上:占据空间 2
         </div>
       </n-grid-item>
       <n-grid-item span="6 m:4 l:2">
@@ -28,9 +24,6 @@
       </n-grid-item>
       <n-grid-item span="0 m:1 l:2">
         <div class="green">
-          m 以下:2不显示<br />
-          m 到 l:占据空间 1<br />
-          l 以上:占据空间 2
         </div>
       </n-grid-item>
     </n-grid>
@@ -38,8 +31,8 @@
 </template>
 <script>
 import {defineComponent, ref} from 'vue'
-import {getToken} from '@/network/system'
-import {setTokenLocalstorage} from '@/util/userInfoUtil'
+import {getToken} from '@/service/system'
+import {setTokenLocalstorage, setUserNo} from '@/utils/userInfoUtil'
 import { useRouter} from 'vue-router';
 import { useMessage } from 'naive-ui';
 export default defineComponent({
@@ -92,6 +85,7 @@ export default defineComponent({
         getToken(modelRef.value.username,modelRef.value.password).then(res=>{
           if(res.data.state){
             setTokenLocalstorage(res.data.token);
+            setUserNo(res.data.userNo);
             message.info(res.data.msg);
             console.log(window.localStorage.token);
             router.push('/home');
@@ -108,14 +102,14 @@ export default defineComponent({
 </script>
 <style lang="scss" scoped>
 .light-green {
-  height: 980px;
+  height: 100vh;
   background-color: rgba(0, 128, 0, 0.12);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 .green {
-  height: 980px;
+  height: 100vh;
   background-color: rgba(0, 128, 0, 0.24);
   display: flex;
   align-items: center;

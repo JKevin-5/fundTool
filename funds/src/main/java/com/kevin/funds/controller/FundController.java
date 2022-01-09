@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
 
+@Slf4j
 @Api(tags = "基金接口")
 @RestController
 @RequestMapping("/funds")
@@ -25,7 +26,7 @@ public class FundController {
     }
 
     @ApiOperation(value = "更新基金历史信息",notes = "更新基金历史信息数据")
-    @GetMapping("/updateFundHis")
+    @PostMapping("/updateFundHis")
     public ResponseResult getFundHis(@RequestBody JSONObject jsonParam) throws Exception{
         return fundService.updateFundHis(jsonParam.get("fundCode").toString(),jsonParam.get("date").toString());
     }
@@ -42,6 +43,10 @@ public class FundController {
         return fundService.findFundInfo(info);
     }
 
-
-
+    @ApiOperation(value = "查询基金信息",notes = "查询基金列表")
+    @GetMapping("/findFundList/{info}")
+    public ResponseResult findFundInfoList(@PathVariable("info") String info){
+        log.info("info:"+info);
+        return fundService.fundFundList(info);
+    }
 }

@@ -2,7 +2,7 @@ import axios from 'axios';
 //创建axios实例
 const instance = axios.create({
     timeout: 30000,   //请求超时时间
-    baseURL: 'https://api.doctorxiong.club/v1/fund'
+    baseURL: '/api'
 })
 
 //get请求
@@ -12,6 +12,9 @@ export const get = (url, params, config = {}) => {
         method: 'get',
         url,
         params,
+        headers: {
+          'token': window.localStorage.token
+        },
         ...config
       },).then(response => {
         resolve(response)
@@ -28,6 +31,9 @@ export const post = (url, data, config = {}) => {
         method: 'post',
         url,
         data,
+        headers: {
+          'token': window.localStorage.token
+        },
         ...config
       }).then(response => {
         resolve(response)
@@ -53,7 +59,7 @@ export const deletes = (url, data, config = {}) => {
     })
   }
 
-//post请求
+//put请求
 export const put = (url, data, config = {}) => {
   return new Promise((resolve, reject) => {
     instance({

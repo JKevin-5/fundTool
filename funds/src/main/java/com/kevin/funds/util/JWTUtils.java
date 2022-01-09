@@ -43,7 +43,7 @@ public class JWTUtils {
 	 * 验证token 合法性 并返回token内的信息
 	 */
 	public static DecodedJWT verify(String token){
-		log.info("token:"+token);
+//		log.info("token:"+token);
 		return JWT.require(Algorithm.HMAC256(SINGLE)).build().verify(token);
 	}
 

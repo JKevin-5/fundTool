@@ -3,6 +3,7 @@ package com.kevin.funds.service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.kevin.funds.bean.Common.DropDownItem;
 import com.kevin.funds.bean.Common.ResponseResult;
 import com.kevin.funds.bean.Fund.FundHis;
 import com.kevin.funds.bean.Fund.FundInfo;
@@ -16,6 +17,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.kevin.funds.util.Network.sendGet;
 
@@ -67,6 +69,28 @@ public class FundService {
             for(FundHis fundHis : fundHisList){
                 JSONObject fundHisObject = (JSONObject) JSONObject.toJSON(fundHis);
                 jsonArray.add(fundHisObject);
+            }
+            jsonObject.put("data",jsonArray);
+            return new ResponseResult("200","查询成功",jsonObject);
+        }else{
+            return new ResponseResult("404","暂无数据",jsonObject);
+        }
+    }
+
+    /*
+    * 模糊查询基金下拉列表
+    * */
+    public ResponseResult fundFundList(String info){
+        JSONObject jsonObject = new JSONObject();
+        List<FundInfo> fundList = fundMapper.fundList(info);
+        List<DropDownItem> dropDownItems = fundList.stream()
+                                            .map(e -> new DropDownItem(e.getFundName(),e.getFundCode()))
+                                            .collect(Collectors.toList());
+        if(dropDownItems.size()>0){
+            JSONArray jsonArray=new JSONArray();
+            for(DropDownItem dropDownItem : dropDownItems){
+                JSONObject dropDownItemObject = (JSONObject) JSONObject.toJSON(dropDownItem);
+                jsonArray.add(dropDownItemObject);
             }
             jsonObject.put("data",jsonArray);
             return new ResponseResult("200","查询成功",jsonObject);

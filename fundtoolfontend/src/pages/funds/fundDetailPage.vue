@@ -21,11 +21,27 @@
                 ref="formRef"
             >
                 <n-form-item label="基金代码/名称" path="fund.name">
-                    <n-input v-model:value="formValue.fund.name" placeholder="输入基金代码或名称"></n-input>
+                    <n-select
+                        v-model:value="formValue.fund.name"
+                        filterable
+                        placeholder="输入基金代码或名称"
+                        :options="options"
+                        :loading="loading"
+                        clearable
+                        remote
+                        @search="getOptionList"
+                        @keydown.enter.prevent
+                    />
                 </n-form-item>
                 <n-form-item>
                     <n-button @click="onSearch" attr-type="button">搜索</n-button>
                 </n-form-item>
+                <n-form-item>
+                    <n-button @click="onUpdate" attr-type="button" type="primary">更新基金历史数据</n-button>
+                </n-form-item>
+                <pre>
+                    {{formValue}}
+                </pre>
             </n-form>
         </n-card>
         <n-card title="查询结果">
@@ -38,7 +54,8 @@
 <script>
 import { defineComponent, onMounted, ref } from "@vue/runtime-core"
 import { useMessage } from "naive-ui"
-import { getFundHis } from "@/network/fund"
+import { getFundHis ,getFundList,updateFundHis} from "@/service/fund"
+
 import * as echarts from 'echarts';
 
 export default defineComponent({
@@ -51,13 +68,15 @@ export default defineComponent({
                     name:''
                 }
             })
+        var fundName = ref('');
+        const optionsRef = ref([])
         let chart;
         const loadingRef = ref(false)
         window.$message = useMessage()
-        const chartOption = (param) => chart.setOption({
+        const chartOption = (param,fundData) => chart.setOption({
             title: {
                 left: 'center',
-                text: '富国中证新能源汽车指数(LOF)A'
+                text: fundData == null ? '':fundData.value?.data.data[0].fundName
             },
             toolbox: {
                 feature: {
@@ -81,7 +100,7 @@ export default defineComponent({
                 },
                 {
                 start: 0,
-                end: 20
+                end: 40
                 }
             ],
             xAxis: {
@@ -104,7 +123,7 @@ export default defineComponent({
             })
         onMounted(()=>{
             chart = echarts.init(document.getElementById('main'));
-            chartOption(formData);
+            chartOption(formData,fundData);
             window.onresize = function(){
                 chart.resize();
             }
@@ -112,15 +131,14 @@ export default defineComponent({
         var onSearch = async ()=>{
             loadingRef.value = true;
             if(formRef.value.model.fund.name!=''){
-                fundData =await getFundHis(formRef.value.model.fund.name).then(res=>{
-                    console.log(res.data);
+                fundData.value =await getFundHis(formRef.value.model.fund.name).then(res=>{
                     formData.value = res.data.data.data[0]?.netWorthData;
+                    fundName.value = res.data.data;
                     loadingRef.value = false;
                     return res.data;
                 }).catch(err=>{
                     loadingRef.value = false;
-                    window.$message.warning('未知错误');
-                    console.log(err);
+                    window.$message.warning('未知错误：'+err);
                     return [];
                 })
                 if(fundData!=null) {
@@ -130,8 +148,8 @@ export default defineComponent({
                     for(var i in eval(formData.value)){
                         array.push(eval(formData.value)[i]);
                     }
-                    chartOption(array);
-                    window.$message.info(fundData?.msg);
+                    chartOption(array,fundData);
+                    window.$message.info(fundData.value?.err_massage);
                 }
                 
             }else{
@@ -140,16 +158,24 @@ export default defineComponent({
                 return;
             }
         }
-        // watchEffect(()=>{
-        //     console.log("更新数据");
-        //     initEcharts(formData);
-        // })
+        var onUpdate = () =>{
+            updateFundHis({
+                fundCode:formValue.value.fund.name,
+                date:'2021-01-01'
+            }
+            ).then(res=>{
+                window.$message.info(res.data.msg);
+            }).catch(err=>{
+                console.log(err);
+            })
+        }
         return {
             formRef,
             fundData,
             formData,
             formValue,
             onSearch,
+            onUpdate,
             size: ref('medium'),
             rules: {
                 fund:{
@@ -159,6 +185,24 @@ export default defineComponent({
                         trigger: ['input','blur']
                     }
                 }
+            },
+            options:optionsRef,
+            loading:loadingRef,
+            // 获取fund下拉框
+            getOptionList:(query)=>{
+                if (!query.length) {
+                    optionsRef.value = []
+                    return
+                }
+                loadingRef.value = true
+                window.setTimeout(() => {
+                    getFundList(query).then(res=>{
+                        optionsRef.value = res.data.data.data.filter(
+                            (item) => ~item.label.indexOf(query)
+                        )
+                    })
+                    loadingRef.value = false
+                }, 1000)
             },
         }
     }

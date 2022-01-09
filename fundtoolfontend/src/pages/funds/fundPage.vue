@@ -10,7 +10,7 @@
             </n-breadcrumb>
         </template>
     </n-page-header>
-    <div >
+    <div>
         <n-card title="查询条件">
             <n-form
                 inline
@@ -30,7 +30,6 @@
         </n-card>
         <n-card title="查询结果">
             <n-data-table
-                remote
                 ref="table"
                 :columns="columns"
                 :data="formData"
@@ -46,7 +45,7 @@
 <script>
 import { defineComponent, ref ,reactive} from "@vue/runtime-core"
 import { useMessage } from "naive-ui"
-import { getFunds } from "@/network/fund"
+import { getFunds } from "@/service/fund"
 
 export default defineComponent({
     setup(){
@@ -75,7 +74,7 @@ export default defineComponent({
         ]
         const paginationReactive = reactive({
             page: 1,
-            pageSize: 5,
+            pageSize: 3,
             showSizePicker: true,
             pageSizes: [1, 3, 5],
             onChange: (page) => {
@@ -94,17 +93,14 @@ export default defineComponent({
                 fundData = await getFunds(formRef.value.model.fund.name).then(res=>{
                     formData.value = res.data.data.data;
                     loadingRef.value = false;
+                    window.$message.info(res.data);
+                    console.log(res.data);
                     return res.data;
                 }).catch(err=>{
                     loadingRef.value = false;
-                    window.$message.warning('未知错误');
-                    console.log(err);
+                    window.$message.warning('未知错误：'+err);
                     return [];
                 })
-                if(fundData!=null) {
-                    loadingRef.value = false;
-                    window.$message.info(fundData?.msg);
-                }
             }else{
                 loadingRef.value = false;
                 window.$message.warning('请输入查询条件');
@@ -132,7 +128,6 @@ export default defineComponent({
                 }
             },
             rowKey (rowData) {
-                console.log(rowData.fundCode);
                 return rowData.fundCode
             },
         }

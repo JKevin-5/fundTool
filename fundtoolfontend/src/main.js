@@ -8,6 +8,8 @@ import Vant from 'vant'
 import 'vant/lib/index.css'
 import axios from "axios";
 import naive from 'naive-ui'
+import ElementPlus from 'element-plus'
+import 'element-plus/dist/index.css'
 
 const app = createApp(App,router)
 app.config.globalProperties.$axios = axios;
@@ -16,5 +18,6 @@ app.use(store)
     .use(router)
     .use(Vant)
     .use(naive)
+    .use(ElementPlus)
     .mount('#app')
 

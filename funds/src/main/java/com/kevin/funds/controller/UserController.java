@@ -47,6 +47,7 @@ public class UserController {
 			map.put("state",true);
 			map.put("msg","认证成功");
 			map.put("token",token);
+			map.put("userNo",userDB.getUserNo());
 		}catch (Exception e){
 			map.put("state",false);
 			map.put("msg",e.getMessage());
