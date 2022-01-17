@@ -1,8 +1,7 @@
 import axios from 'axios';
 //创建axios实例
 const instance = axios.create({
-    timeout: 30000,   //请求超时时间
-    baseURL: '/api'
+    timeout: 10000   //请求超时时间
 })
 
 //get请求

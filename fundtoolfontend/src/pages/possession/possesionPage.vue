@@ -44,12 +44,15 @@
                 style="width: 100%"
             >
                 <el-table-column prop="fundName" label="基金名称" width="180" />
+                <el-table-column prop="nowWorth" label="净值" width="90" />
+                <el-table-column prop="dayGrowth" label="日涨幅" width="90" />
+                <el-table-column prop="updateTime" label="更新时间" width="150" />
                 <el-table-column prop="possessionWorth" label="成本" sortable width="90" />
                 <el-table-column prop="possessionNum" label="份额" width="90" />
+                <el-table-column prop="nowEarn" label="今日收益" sortable width="90" />
                 <el-table-column prop="earnPercent" label="收益率" sortable width="90" />
                 <el-table-column prop="earn" label="收益" sortable width="90" />
                 <el-table-column prop="totalWorth" label="市值" width="90" />
-                <el-table-column prop="sellHis" label="操作历史" />
             </el-table>
         </n-card>
     </div>
@@ -71,8 +74,9 @@
 import { defineComponent, onMounted, ref} from 'vue'
 // import { FundViewOutlined } from '@vicons/antd'
 import addPossession from './addPossession.vue'
-import { getPossessions } from '@/service/possession'
-import { getUserNo } from '@/utils/userInfoUtil'
+// import { getPossessions } from '@/service/possession'
+// import { getUserNo } from '@/utils/userInfoUtil'
+import { getFundListNow } from '@/service/fund'
 
 export default defineComponent({
     components:{
@@ -84,11 +88,61 @@ export default defineComponent({
         const optionsRef = ref([])
         const tableDataRef = ref([])
         const showModal = ref(false)
+        const possessions = ref([
+            {
+                fundCode:'012414',
+                fundName:'',
+                possessionWorth:'1.2942',
+                possessionNum:'175.6',
+                updateTime:'',
+                nowWorth:'',
+                dayGrowth:''
+            },{
+                fundCode:'004070',
+                fundName:'',
+                possessionWorth:'1.1793',
+                possessionNum:'170.13',
+                updateTime:'',
+                nowWorth:'',
+                dayGrowth:''
+            }
+        ])
+        const dataTableRef = ref([])
+        function makeFunds(str,possession){
+            str = str.substring(8,str.length-2);
+            str = JSON.parse(str)
+            possession.fundName = str.name
+            possession.updateTime = str.gztime
+            possession.nowWorth = str.gsz
+            possession.dayGrowth = str.gszzl
+            if(possession.possessionNum!==''&&possession.possessionWorth!==''){
+                // 市值
+                possession.totalWorth = (str.gsz * possession.possessionNum).toFixed(2)
+                // 收益率
+                possession.earnPercent = ((str.gsz - possession.possessionWorth)/possession.possessionWorth).toFixed(2)+'%'
+                // 收益
+                possession.earn = ((str.gsz - possession.possessionWorth)*possession.possessionNum).toFixed(2)
+                // 今日收益
+                possession.nowEarn = ((str.gsz - str.dwjz)*possession.possessionNum).toFixed(2)
+            }
+            tableDataRef.value.push(possession)
+        }
+        const getdata = async ()=>{
+            for(let i =0;i<possessions.value.length;i++){
+                // 调用系统外部api获取实时基金数据
+                await getFundListNow(possessions.value[i].fundCode).then(res=>{
+                    makeFunds(res.data,possessions.value[i])
+                })
+            }
+            console.log(dataTableRef.value)
+        }
         onMounted(()=>{
-            getPossessions(getUserNo()).then(res=>{
-                console.log(res.data.data.data)
-                tableDataRef.value=res.data.data.data
-            })
+            // 调用系统内部api获取持有份额
+            // getPossessions(getUserNo()).then(res=>{
+            //     console.log(res.data.data.data)
+            //     tableDataRef.value=res.data.data.data
+            // })
+            getdata()
         })
         return{
             tableData:tableDataRef,
@@ -107,7 +161,7 @@ export default defineComponent({
 
 <style>
 .n-card {
-  max-width: 800px;
+  max-width: 1000px;
   margin: 20px;
 }
 </style>
